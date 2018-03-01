@@ -5,7 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import io.swagger.annotations.ApiModel;
+
 @Entity
+@ApiModel
 public class User {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -16,6 +19,10 @@ public class User {
     
     public User(String username) {
     	this.username = username;
+    }
+    
+    public Long getId() {
+    	return id;
     }
     
     public String getUsername() {
