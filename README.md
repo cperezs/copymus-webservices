@@ -1,5 +1,14 @@
 # CopyMus webservices
 
+## Deployment
+
+- `./mvnw clean package`
+- Create `~/copymus` folder and copy inside:
+	- `target/copymus-webservices-X.X.X.jar`
+	- `src/main/resources/application.properties`
+	- `copymus.service`
+- Check user and folders inside `copymus.service` and install as `systemd` service
+
 ## Security
 
 All services are secured using an API key. Currently there is only one key registered, it can be changed in `application.properties`:

@@ -22,6 +22,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		// This is needed to enable the h2 console 
 		http.cors().and().csrf().disable();
 		http.headers().frameOptions().disable();
+		http.authorizeRequests().antMatchers("/h2-console/**").permitAll();
 		
 		// Allow access to Swagger UI and OpenAPI documentation
 		http.authorizeRequests().antMatchers(HttpMethod.GET, "/", "/swagger-ui/**", "/api-docs.yaml").permitAll();

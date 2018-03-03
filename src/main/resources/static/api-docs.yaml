@@ -5,7 +5,7 @@ info:
 servers:
   - url: https://grfia.dlsi.ua.es/copymus
     description: Production server
-  - url: http://localhost:8080
+  - url: http://localhost:8090
     description: Development server
 paths:
   /users:
