@@ -20,10 +20,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import es.ua.dlsi.grfia.hispamus.models.User;
 import es.ua.dlsi.grfia.hispamus.models.UserRepository;
-import io.swagger.annotations.Api;
 
 @RestController
-@Api(value = "/users")
 @RequestMapping("/users")
 public class UserController {
 
