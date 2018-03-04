@@ -2,12 +2,20 @@
 
 ## Deployment
 
-- `./mvnw clean package`
+```
+./mvnw clean package
+```
+
 - Create `~/copymus` folder and copy inside:
 	- `target/copymus-webservices-X.X.X.jar`
 	- `src/main/resources/application.properties`
-	- `copymus.service`
-- Check user and folders inside `copymus.service` and install as `systemd` service
+	- `copymus-start.sh`
+- Update symbolic link `~/copymus/copymus-latest` to the latest jar
+- Edit crontab with `crontab -e`:
+
+```
+@reboot cd /home/cperez/copymus && ./copymus-start.sh
+```
 
 ## Security
 
