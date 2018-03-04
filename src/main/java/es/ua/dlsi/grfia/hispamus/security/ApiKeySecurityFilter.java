@@ -20,6 +20,8 @@ public class ApiKeySecurityFilter extends BasicAuthenticationFilter {
 	private final Logger log = LoggerFactory.getLogger(ApiKeySecurityFilter.class);
 
 	private final String AUTH_HEADER = "X-API-KEY";
+	// Must be the same as spring.security.user.name
+	private final String AUTH_USER = "copymus";
 	
 	public ApiKeySecurityFilter(AuthenticationManager authenticationManager) {
 		super(authenticationManager);
@@ -32,21 +34,28 @@ public class ApiKeySecurityFilter extends BasicAuthenticationFilter {
         String token = req.getHeader(AUTH_HEADER);
 
         if (token == null) {
-        	log.info("Access denied without token");
+        	doError(req, res);
             chain.doFilter(req, res);
             return;
         }
 
-        try {        	
-        	UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("user", token);
+        try {
+        	UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(AUTH_USER, token);
         	Authentication result = getAuthenticationManager().authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(result);
-        	log.info("Access granted with token " + token);
+        	log.info("Access granted with token " + token + " to URL " + req.getRequestURI());
         } catch (Exception e) {
-        	log.info("Access denied with token " + token);
+        	doError(req, res);
         }        
 
         chain.doFilter(req, res);
+	}
+	
+	private void doError(HttpServletRequest req, HttpServletResponse res) {
+		String uri = req.getRequestURI();
+		if (uri.startsWith("/swagger-ui/") || uri.equals("/") || uri.equals("/api-docs.yaml"))
+			return;
+    	log.info("Access denied without token to URL " + uri);
 	}
 
 }

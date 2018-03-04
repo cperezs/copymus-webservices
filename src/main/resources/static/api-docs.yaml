@@ -11,6 +11,8 @@ paths:
   /users:
     get:
       summary: Lists all registered users
+      tags:
+        - User management
       responses:
         '200':
           description: JSON array with users
@@ -18,8 +20,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Users"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       summary: Creates a new user
+      tags:
+        - User management
       description: username must be unique (case-insensitive)
       requestBody:
         description: User data
@@ -39,11 +45,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '409':
           description: User already exists
   /users/{id}:
     get:
       summary: Returns a user given its ID
+      tags:
+        - User management
       parameters:
         - name: id
           in: path
@@ -59,10 +69,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: User does not exist
     put:
       summary: Changes the username
+      tags:
+        - User management
       description: username must be unique (case-insensitive)
       parameters:
         - name: id
@@ -90,12 +104,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: User does not exist
         '409':
           description: User already exists
     delete:
       summary: Deletes a user given its ID
+      tags:
+        - User management
       parameters:
         - name: id
           in: path
@@ -107,6 +125,8 @@ paths:
       responses:
         '200':
           description: User deleted
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: User does not exist
 components:
@@ -130,5 +150,12 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+  responses:
+    UnauthorizedError:
+      description: API key is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
 security:
   - ApiKeyAuth: []

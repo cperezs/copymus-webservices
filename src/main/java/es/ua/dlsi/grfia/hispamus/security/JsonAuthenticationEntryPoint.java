@@ -19,13 +19,14 @@ public class JsonAuthenticationEntryPoint extends BasicAuthenticationEntryPoint 
       (HttpServletRequest request, HttpServletResponse response, AuthenticationException authEx) 
       throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setHeader("WWW-Authenticate", "API_key realm=\"CopyMus webservices\"");
         PrintWriter writer = response.getWriter();
         writer.println("{\"message\": \"Unauthorized\"}");
     }
  
     @Override
     public void afterPropertiesSet() throws Exception {
-        setRealmName("Copymus");
+        setRealmName("CopyMus webservices");
         super.afterPropertiesSet();
     }
 }
