@@ -1,0 +1,15 @@
+[Unit]
+Description=copymus
+After=syslog.target
+
+[Service]
+User=cperez
+WorkingDirectory=/home/cperez/copymus
+ExecStart=/home/cperez/copymus/copymus-latest
+SuccessExitStatus=143
+TimeoutStopSec=10
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
