@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.hispamus.security;
+package es.ua.dlsi.grfia.copymus.security;
 
 import java.io.IOException;
 import java.io.PrintWriter;

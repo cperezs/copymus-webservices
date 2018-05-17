@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.hispamus.security;
+package es.ua.dlsi.grfia.copymus.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -23,3 +23,43 @@ databaseChangeLog:
                   constraints:
                     unique: true
                     nullable: false
+  - changeSet:
+      id: 2
+      author: cperez
+      changes:
+        - createTable:
+            tableName: score
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: db
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: author
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: pdf
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: midi
+                  type: varchar(255)
+                  constraints:
+                    nullable: true

@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.hispamus.models;
+package es.ua.dlsi.grfia.copymus.models;
 
 import java.util.Optional;
 

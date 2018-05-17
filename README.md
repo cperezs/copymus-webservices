@@ -27,3 +27,10 @@ spring.security.user.password=API_KEY
 ## OpenAPI documentation
 
 Swagger UI is available at `/swagger-ui/index.html`. The API key can be specified by pressing the `Authorize` button.
+
+## Database import
+
+For importing Primus database, execute with `primusimport` profile:
+```
+$ 
+```

@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.hispamus;
+package es.ua.dlsi.grfia.copymus;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
