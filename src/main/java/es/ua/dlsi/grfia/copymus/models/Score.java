@@ -1,20 +1,16 @@
 package es.ua.dlsi.grfia.copymus.models;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Score {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String db;
 	private String title;
 	private String author;
-	private String pdf;
-	private String midi;
+	private String path;
 
 	public Long getId() {
 		return id;
@@ -48,24 +44,12 @@ public class Score {
 		this.author = author;
 	}
 
-	public String getPdf() {
-		return pdf;
-	}
-
-	public void setPdf(String pdf) {
-		this.pdf = pdf;
-	}
-
-	public String getMidi() {
-		return midi;
-	}
-
-	public void setMidi(String midi) {
-		this.midi = midi;
+	public String getPath() {
+		return path;
 	}
 
 	@Override
 	public String toString() {
-		return "Score [id=" + id + ", title=" + title + ", author=" + author + ", pdf=" + pdf + ", midi=" + midi + "]";
+		return "Score [id=" + id + ", title=" + title + ", author=" + author + ", pdf=" + path + "]";
 	}
 }

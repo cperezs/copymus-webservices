@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.hispamus.controllers;
+package es.ua.dlsi.grfia.copymus.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

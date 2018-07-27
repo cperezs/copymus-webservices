@@ -32,8 +32,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: int
-                  autoIncrement: true
+                  type: varchar(255)
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -53,13 +52,8 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: pdf
+                  name: path
                   type: varchar(255)
                   constraints:
                     unique: true
                     nullable: false
-              - column:
-                  name: midi
-                  type: varchar(255)
-                  constraints:
-                    nullable: true

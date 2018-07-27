@@ -30,7 +30,8 @@ Swagger UI is available at `/swagger-ui/index.html`. The API key can be specifie
 
 ## Database import
 
-For importing Primus database, execute with `primusimport` profile:
+For importing Primus database, run `primus.sql` script from the H2 shell:
 ```
-$ 
+$ java -cp h2*.jar org.h2.tools.Shell
+sql> runscript from 'primus.sql';
 ```
