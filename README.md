@@ -3,12 +3,11 @@
 ## Deployment
 
 ```
-./mvnw clean package
+./mvnw clean package -Dmaven.test.skip=true
 ```
 
 - Create `~/copymus/`, `~/copymus/db/`, and `~/copymus/dist/` folders and copy:
 	- `target/copymus-webservices-X.X.X.jar` into `~/copymus/dist/`
-	- `src/main/resources/application.properties` into `~/copymus/`
 	- `copymus-start.sh` into `~/copymus/`
 - Update symbolic link `~/copymus/copymus-latest` to the latest jar
 - Edit crontab with `crontab -e`:
