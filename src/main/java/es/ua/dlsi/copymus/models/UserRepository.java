@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.copymus.models;
+package es.ua.dlsi.copymus.models;
 
 import java.util.Optional;
 

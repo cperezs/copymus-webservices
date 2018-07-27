@@ -1,22 +1,26 @@
-package es.ua.dlsi.grfia.copymus.models;
+package es.ua.dlsi.copymus.models;
+
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Score {
 	@Id
-	private Long id;
+	private String id;
 	private String db;
 	private String title;
 	private String author;
 	private String path;
+	private Set<User> annotators;
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -46,6 +50,11 @@ public class Score {
 
 	public String getPath() {
 		return path;
+	}
+	
+	@ManyToMany(mappedBy = "scores")
+	public Set<User> getAnnotators() {
+		return annotators;
 	}
 
 	@Override
