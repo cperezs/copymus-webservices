@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.copymus.controllers;
+package es.ua.dlsi.copymus.controllers;
 
 import java.net.URI;
 import java.util.Optional;
@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import es.ua.dlsi.grfia.copymus.models.User;
-import es.ua.dlsi.grfia.copymus.models.UserRepository;
+import es.ua.dlsi.copymus.models.User;
+import es.ua.dlsi.copymus.models.UserRepository;
 
 @RestController
 @RequestMapping("/users")

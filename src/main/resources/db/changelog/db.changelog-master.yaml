@@ -74,6 +74,10 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+        - addPrimaryKey:
+            tableName: annotation
+            columnNames: user_id, score_id
+            constraintName: pk_annotation
         - addForeignKeyConstraint:
             baseColumnNames: user_id
             baseTableName: annotation

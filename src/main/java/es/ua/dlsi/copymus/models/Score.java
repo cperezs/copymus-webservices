@@ -1,10 +1,7 @@
 package es.ua.dlsi.copymus.models;
 
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 
 @Entity
 public class Score {
@@ -14,7 +11,6 @@ public class Score {
 	private String title;
 	private String author;
 	private String path;
-	private Set<User> annotators;
 
 	public String getId() {
 		return id;
@@ -52,11 +48,6 @@ public class Score {
 		return path;
 	}
 	
-	@ManyToMany(mappedBy = "scores")
-	public Set<User> getAnnotators() {
-		return annotators;
-	}
-
 	@Override
 	public String toString() {
 		return "Score [id=" + id + ", title=" + title + ", author=" + author + ", pdf=" + path + "]";

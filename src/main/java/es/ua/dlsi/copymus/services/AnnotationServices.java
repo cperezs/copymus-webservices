@@ -1,8 +1,6 @@
 package es.ua.dlsi.copymus.services;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,10 +24,7 @@ public class AnnotationServices {
 		Optional<User> optUser = userRepository.findById(user_id);
 		if (!optUser.isPresent()) return false;
 		User user = optUser.get();
-		
-		Set<Score> scores = user.getAnnotatedScores();
-		if (scores == null) scores = new HashSet<Score>();
-				
+						
 		return true;
 	}
 }
