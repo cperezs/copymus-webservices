@@ -74,6 +74,9 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: creation_date
+                  type: java.sql.Types.TIMESTAMP
         - addPrimaryKey:
             tableName: annotation
             columnNames: user_id, score_id

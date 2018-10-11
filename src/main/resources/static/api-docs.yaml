@@ -8,6 +8,18 @@ servers:
   - url: http://localhost:8090
     description: Development server
 paths:
+  /score/primus/1/pending:
+    get:
+      summary: Returns a random score
+      responses:
+        '200':
+          description: JSON with the score data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Score"
+        '404':
+          description: user or database does not exist
   /users:
     get:
       summary: Lists all registered users
@@ -131,6 +143,18 @@ paths:
           description: User does not exist
 components:
   schemas:
+    Score:
+      required:
+        - id
+        - title
+        - author
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
     User:
       required:
         - id
