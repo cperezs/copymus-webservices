@@ -8,9 +8,25 @@ servers:
   - url: http://localhost:8090
     description: Development server
 paths:
-  /score/primus/1/pending:
+  /score/{db}/{user}/pending:
     get:
       summary: Returns a random score
+      tags:
+        - Score management
+      parameters:
+        - name: db
+          in: path
+          description: Database to get the score from. Currently only "primus" is available.
+          required: true
+          schema:
+            type: string
+        - name: user
+          in: path
+          description: ID of the user that is going to annotate the score
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: JSON with the score data
@@ -18,8 +34,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Score"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
-          description: user or database does not exist
+          description: User or database does not exist
   /users:
     get:
       summary: Lists all registered users
@@ -155,6 +173,12 @@ components:
           type: string
         author:
           type: string
+        pdf:
+          type: string
+          format: byte
+        midi:
+          type: string
+          format: byte
     User:
       required:
         - id
