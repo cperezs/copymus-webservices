@@ -1,23 +1,18 @@
 package es.ua.dlsi.copymus.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.ua.dlsi.copymus.dto.ScoreDto;
+import es.ua.dlsi.copymus.dto.assemblers.ScoreAssembler;
 import es.ua.dlsi.copymus.models.Score;
 import es.ua.dlsi.copymus.models.ScoreRepository;
 import es.ua.dlsi.copymus.models.User;
@@ -26,10 +21,10 @@ import es.ua.dlsi.copymus.models.UserRepository;
 @RestController
 @RequestMapping("/score")
 public class ScoreController {
-	private class ScoreNotFoundException extends Exception {
+/*	private class ScoreNotFoundException extends Exception {
 		private static final long serialVersionUID = 169828852424309034L;		
 	}
-	
+*/	
 	private final Logger log = LoggerFactory.getLogger(ScoreController.class);
 	
 	@Autowired
@@ -38,24 +33,44 @@ public class ScoreController {
 	@Autowired
 	UserRepository userRepository;
 	
+	@GetMapping("/{db}/{scoreId}")
+	public ResponseEntity<ScoreDto> getScore(@PathVariable("db") String db, @PathVariable("scoreId") String scoreId) {
+		Optional<Score> score = scoreRepository.findByDbAndId(db, scoreId);
+		if (!score.isPresent()) {
+			log.info("Score " + scoreId + " not found in database " + db);
+			return ResponseEntity.notFound().build();
+		}
+		
+		try {
+			ScoreDto dto = ScoreAssembler.getScoreDto(score.get());
+			return ResponseEntity.ok(dto);
+		}
+		catch (Exception e) {
+			log.error("An error occurred while creating a representation for score " + score.get().getId());
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
 	@GetMapping("/{db}/{userId}/pending")
 	public ResponseEntity<ScoreDto> getNotAnnotatedScoreForUser(@PathVariable("db") String db, @PathVariable("userId") Long userId) {
 		Optional<User> user = userRepository.findById(userId);
-		if (!user.isPresent())
+		if (!user.isPresent()) {
+			log.info("User " + userId + " not found");
 			return ResponseEntity.notFound().build();
+		}
 		
-		//Optional<Score> score = scoreRepository.getRandomScore(db);
-		Optional<Score> score = scoreRepository.findById("211010353-1_3_1");
-		if (!score.isPresent())
+		Optional<Score> score = scoreRepository.getRandomScore(db);
+		if (!score.isPresent()) {
+			log.error("Could not find a random score");
 			return ResponseEntity.notFound().build();
+		}
 			
-		log.debug(score.get().toString());
-		
 		try {
-			ScoreDto dto = ScoreDto.fromScore(score.get());
+			ScoreDto dto = ScoreAssembler.getScoreDto(score.get());
 			return ResponseEntity.ok(dto);
 		}
-		catch (IOException e) {
+		catch (Exception e) {
+			log.error("An error occurred while creating a representation for score " + score.get().getId());
 			return ResponseEntity.notFound().build();
 		}
 	}
