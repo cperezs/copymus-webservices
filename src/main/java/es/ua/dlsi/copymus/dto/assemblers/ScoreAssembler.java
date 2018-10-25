@@ -6,18 +6,25 @@ import java.util.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import es.ua.dlsi.copymus.AppProperties;
 import es.ua.dlsi.copymus.dto.ScoreDto;
 import es.ua.dlsi.copymus.models.Score;
 import es.ua.dlsi.copymus.util.SVGUtils;
 
+@Component
 public class ScoreAssembler {
 	
-	private static String encodeToBase64(byte[] data) {
+	@Autowired
+	AppProperties conf;
+	
+	private String encodeToBase64(byte[] data) {
 		return new String(Base64.getEncoder().encode(data));
 	}
 	
-	public static ScoreDto getScoreDto(Score score) throws Exception {
+	public ScoreDto getScoreDto(Score score) throws Exception {
 		Logger log = LoggerFactory.getLogger(ScoreAssembler.class);
 		
 		ScoreDto dto = new ScoreDto();
@@ -27,15 +34,21 @@ public class ScoreAssembler {
 		dto.setTitle(score.getTitle());
 		dto.setAuthor(score.getAuthor());
 		
-		String svgPath = score.getPath() + File.separator + id + ".svg";
+		String svgPath = conf.getDatabasesPath() + score.getPath() + File.separator + id + ".svg";
 		try {
 			dto.setPdf(encodeToBase64(SVGUtils.svg2pdf(svgPath)));
 		} catch (Exception e) {
-			log.error("Could not get PDF for score " + score.getId() + ": " + e.toString());
+			log.error("Could not get PDF for score [" + score.getId() + "]: " + e.toString());
+			throw e;
 		}
 		
-		File midiFile = new File(score.getPath() + File.separator + id + ".mid");
-		dto.setMidi(encodeToBase64(Files.readAllBytes(midiFile.toPath())));
+		File midiFile = new File(conf.getDatabasesPath() + score.getPath() + File.separator + id + ".midd");
+		try {
+			dto.setMidi(encodeToBase64(Files.readAllBytes(midiFile.toPath())));
+		} catch (Exception e) {
+			log.error("Could not get MIDI file for score [" + score.getId() + "]: " + e.toString());
+			throw e;
+		}
 
 		return dto;
 	}

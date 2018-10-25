@@ -37,6 +37,38 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: Score or database does not exist
+  /score/{db}/{id}/annotate:
+    post:
+      summary: Stores an annotation for the score.
+      tags:
+        - Score management
+      parameters:
+        - name: db
+          in: path
+          description: Database to get the score from. Currently only "primus" is available.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of the score
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Annotation successfully created
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Score, database, or user does not exist
   /score/{db}/{user}/pending:
     get:
       summary: Returns a random score
