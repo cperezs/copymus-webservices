@@ -57,3 +57,41 @@ databaseChangeLog:
                   constraints:
                     unique: true
                     nullable: false
+  - changeSet:
+      id: 3
+      author: cperez
+      changes:
+        - createTable:
+            tableName: annotation
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: score_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: java.sql.Types.TIMESTAMP
+        - addPrimaryKey:
+            tableName: annotation
+            columnNames: user_id, score_id
+            constraintName: pk_annotation
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: annotation
+            constraintName: fk_annotation_user
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: user
+        - addForeignKeyConstraint:
+            baseColumnNames: score_id
+            baseTableName: annotation
+            constraintName: fk_annotation_score
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: score

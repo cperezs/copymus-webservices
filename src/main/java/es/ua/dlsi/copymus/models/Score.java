@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.copymus.models;
+package es.ua.dlsi.copymus.models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -6,17 +6,17 @@ import javax.persistence.Id;
 @Entity
 public class Score {
 	@Id
-	private Long id;
+	private String id;
 	private String db;
 	private String title;
 	private String author;
 	private String path;
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -47,7 +47,7 @@ public class Score {
 	public String getPath() {
 		return path;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Score [id=" + id + ", title=" + title + ", author=" + author + ", pdf=" + path + "]";

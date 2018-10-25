@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.copymus.security;
+package es.ua.dlsi.copymus.security;
 
 import java.io.IOException;
 

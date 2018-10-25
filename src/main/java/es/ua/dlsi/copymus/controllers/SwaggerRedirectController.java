@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.copymus.controllers;
+package es.ua.dlsi.copymus.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

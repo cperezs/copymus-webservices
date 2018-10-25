@@ -1,4 +1,4 @@
-package es.ua.dlsi.grfia.copymus;
+package es.ua.dlsi.copymus;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
