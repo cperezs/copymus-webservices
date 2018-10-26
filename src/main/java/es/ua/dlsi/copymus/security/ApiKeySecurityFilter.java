@@ -53,7 +53,11 @@ public class ApiKeySecurityFilter extends BasicAuthenticationFilter {
 	
 	private void doError(HttpServletRequest req, HttpServletResponse res) {
 		String uri = req.getRequestURI();
-		if (uri.startsWith("/swagger-ui/") || uri.equals("/") || uri.equals("/api-docs.yaml"))
+		if (uri.startsWith("/swagger-ui/")
+				|| uri.equals("/")
+				|| uri.equals("/api-docs.yaml")
+				|| uri.startsWith("/h2-console")
+				|| uri.equals("/favicon.ico"))
 			return;
     	log.info("Access denied without token to URL " + uri);
 	}
