@@ -42,7 +42,7 @@ public class ScoreAssembler {
 			throw e;
 		}
 		
-		File midiFile = new File(conf.getDatabasesPath() + score.getPath() + File.separator + id + ".midd");
+		File midiFile = new File(conf.getDatabasesPath() + score.getPath() + File.separator + id + ".mid");
 		try {
 			dto.setMidi(encodeToBase64(Files.readAllBytes(midiFile.toPath())));
 		} catch (Exception e) {
