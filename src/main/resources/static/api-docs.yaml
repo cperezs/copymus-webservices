@@ -304,6 +304,30 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: User does not exist
+  /users/{id}/annotations:
+    get:
+      summary: Lists all annotations performed by the user
+      tags:
+        - User management
+      parameters:
+        - name: id
+          in: path
+          description: ID of the user
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: JSON array with score ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnotationSummary"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
 components:
   schemas:
     Score:
@@ -337,6 +361,17 @@ components:
         interactions:
           type: string
           format: byte
+    AnnotationSummary:
+      properties:
+        db:
+          type: string
+        scoreId:
+          type: string
+        userId:
+          type: integer
+          format: int64
+        url:
+          type: string
     User:
       required:
         - id

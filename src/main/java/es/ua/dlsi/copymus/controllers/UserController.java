@@ -1,6 +1,7 @@
 package es.ua.dlsi.copymus.controllers;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import es.ua.dlsi.copymus.models.AnnotationRepository;
+import es.ua.dlsi.copymus.models.AnnotationSummary;
 import es.ua.dlsi.copymus.models.User;
 import es.ua.dlsi.copymus.models.UserRepository;
 
@@ -27,6 +30,9 @@ public class UserController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private AnnotationRepository annotationRepository;
 	
 	private final Logger log = LoggerFactory.getLogger(UserController.class);
 	
@@ -96,5 +102,10 @@ public class UserController {
 		}
 		
 		return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/{id}/annotations")
+	public List<AnnotationSummary> getAnnotations(@PathVariable("id") Long id) {
+		return annotationRepository.getByUserId(id);
 	}
 }
