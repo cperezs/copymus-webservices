@@ -95,3 +95,52 @@ databaseChangeLog:
             onDelete: CASCADE
             referencedColumnNames: id
             referencedTableName: score
+  - changeSet:
+      id: 4
+      author: cperez
+      changes:
+        addColumn:
+          tableName: score
+          columns:
+            - column:
+                name: invalid
+                type: boolean
+                defaultValue: false
+  - changeSet:
+      id: 5
+      author: cperez
+      changes:
+        - createTable:
+            tableName: invalidation
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: score_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: java.sql.Types.TIMESTAMP
+        - addPrimaryKey:
+            tableName: invalidation
+            columnNames: user_id, score_id
+            constraintName: pk_invalidation
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: invalidation
+            constraintName: fk_invalidation_user
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: user
+        - addForeignKeyConstraint:
+            baseColumnNames: score_id
+            baseTableName: invalidation
+            constraintName: fk_invalidation_score
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: score

@@ -22,21 +22,23 @@ import es.ua.dlsi.copymus.models.Annotation;
 import es.ua.dlsi.copymus.models.AnnotationIdentity;
 import es.ua.dlsi.copymus.models.AnnotationRepository;
 import es.ua.dlsi.copymus.models.AnnotationStorageService;
+import es.ua.dlsi.copymus.models.Invalidation;
+import es.ua.dlsi.copymus.models.InvalidationRepository;
 import es.ua.dlsi.copymus.models.Score;
 import es.ua.dlsi.copymus.models.ScoreRepository;
 import es.ua.dlsi.copymus.models.User;
 import es.ua.dlsi.copymus.models.UserRepository;
 
 @RestController
-@RequestMapping("/score")
+@RequestMapping("/scores")
 public class ScoreController {
 
 	private final Logger log = LoggerFactory.getLogger(ScoreController.class);
 	
-	private static final String SCORE_ID_NOT_FOUND = "Score with id [%s] not found";
-	private static final String USERNAME_NOT_FOUND = "User with username [%s] not found";
+	private static final String SCORE_ID_NOT_FOUND = "Score with id [%s] not found in database [%s]";
+	//private static final String USERNAME_NOT_FOUND = "User with username [%s] not found";
 	private static final String USER_ID_NOT_FOUND = "User with id [%d] not found";
-	private static final String RANDOM_SCORE_ERROR = "Could not find a random score";
+	private static final String RANDOM_SCORE_ERROR = "There are no pending scores for this user";
 	private static final String REPRESENTATION_ERROR = "An error occurred while creating a representation for score [%s]";
 	private static final String SAVE_ANNOTATION_ERROR = "Error while saving annotation files for score [%s]";
 	private static final String SCORE_REPRESENTATION_ERROR = "An error occurred while creating a representation for score [%s]";
@@ -54,6 +56,9 @@ public class ScoreController {
 	AnnotationRepository annotationRepository;
 	
 	@Autowired
+	InvalidationRepository invalidationRepository;
+	
+	@Autowired
 	AnnotationStorageService storageService;
 	
 	@GetMapping("/{db}/{scoreId}")
@@ -61,7 +66,7 @@ public class ScoreController {
 	public ScoreDto getScore(@PathVariable("db") String db, @PathVariable("scoreId") String scoreId) throws NotFoundException, ErrorException {
 		Optional<Score> score = scoreRepository.findByDbAndId(db, scoreId);
 		if (!score.isPresent())
-			throw new NotFoundException(String.format(SCORE_ID_NOT_FOUND, scoreId));
+			throw new NotFoundException(String.format(SCORE_ID_NOT_FOUND, scoreId, db));
 		
 		try {
 			return scoreAssembler.getScoreDto(score.get());
@@ -75,18 +80,18 @@ public class ScoreController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createAnnotation(@PathVariable("db") String db,
 			@PathVariable("scoreId") String scoreId,
-			@RequestParam("username") String username,
+			@RequestParam("user_id") Long userId,
 			@RequestParam("image") MultipartFile image,
 			@RequestParam("interactions") MultipartFile interactions) throws ErrorException, NotFoundException {
 		
 		Optional<Score> score = scoreRepository.findByDbAndId(db, scoreId);
 		if (!score.isPresent()) {
-			throw new NotFoundException(String.format(SCORE_ID_NOT_FOUND, scoreId));
+			throw new NotFoundException(String.format(SCORE_ID_NOT_FOUND, scoreId, db));
 		}
 		
-		Optional<User> user = userRepository.findByUsernameIgnoreCase(username);
+		Optional<User> user = userRepository.findById(userId);
 		if (!user.isPresent())
-			throw new NotFoundException(String.format(USERNAME_NOT_FOUND, username));
+			throw new NotFoundException(String.format(USER_ID_NOT_FOUND, userId));
 		
 		try {
 			storageService.saveImage(score.get(), user.get(), image);
@@ -100,6 +105,27 @@ public class ScoreController {
 		log.info("Stored annotations for score " + scoreId + "[" + db + "] by user " + user.get().getUsername());
 	}
 	
+	@PostMapping("/{db}/{scoreId}/invalidate")
+	@ResponseStatus(HttpStatus.OK)
+	public void setScoreInvalid(@PathVariable("db") String db,
+		@PathVariable("scoreId") String scoreId,
+		@RequestParam("user_id") Long userId) throws NotFoundException {
+		
+		Optional<Score> optScore = scoreRepository.findByDbAndId(db, scoreId);
+		if (!optScore.isPresent())
+			throw new NotFoundException(String.format(SCORE_ID_NOT_FOUND, scoreId, db));
+		
+		Optional<User> user = userRepository.findById(userId);
+		if (!user.isPresent())
+			throw new NotFoundException(String.format(USER_ID_NOT_FOUND, userId));
+		
+		Score score = optScore.get();
+		score.setInvalid(true);
+		scoreRepository.save(score);
+		
+		invalidationRepository.save(new Invalidation(new AnnotationIdentity(userId, scoreId)));
+	}
+	
 	@GetMapping("/{db}/{userId}/pending")
 	@ResponseStatus(HttpStatus.OK)
 	public ScoreDto getNotAnnotatedScoreForUser(@PathVariable("db") String db, @PathVariable("userId") Long userId) throws NotFoundException, ErrorException {
@@ -109,7 +135,7 @@ public class ScoreController {
 		
 		Optional<Score> score = scoreRepository.getRandomScore(db);
 		if (!score.isPresent())
-			throw new ErrorException(RANDOM_SCORE_ERROR);
+			throw new NotFoundException(RANDOM_SCORE_ERROR);
 			
 		try {
 			return scoreAssembler.getScoreDto(score.get());
@@ -146,16 +172,6 @@ public class ScoreController {
 		File file = new File(score.get().getPath() + File.separator + scoreId + ".mid");
 		log.trace(file.getAbsolutePath() + " exists: " + file.exists());
 		return Files.readAllBytes(file.toPath());
-	}
-	
-	@ExceptionHandler({ScoreNotFoundException.class})
-	public ResponseEntity<String> handleScoreNotFoundException() {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Score not found");
-	}
-	
-	@ExceptionHandler({IOException.class})
-	public ResponseEntity<String> handleIOException() {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
-	}
+	}	
 */
 }

@@ -11,6 +11,7 @@ public class Score {
 	private String title;
 	private String author;
 	private String path;
+	private boolean invalid;
 
 	public String getId() {
 		return id;
@@ -48,8 +49,20 @@ public class Score {
 		return path;
 	}
 	
+	public boolean isInvalid() {
+		return invalid;
+	}
+
+	public void setInvalid(boolean invalid) {
+		this.invalid = invalid;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 	@Override
 	public String toString() {
-		return "Score [id=" + id + ", title=" + title + ", author=" + author + ", pdf=" + path + "]";
+		return "Score [id=" + id + ", db=" + db + ", title=" + title + ", author=" + author + ", path=" + path + ", invalid=" + invalid + "]";
 	}
 }

@@ -10,6 +10,6 @@ public interface ScoreRepository extends CrudRepository<Score, String> {
 	
 	public Optional<Score> findByDbAndId(String db, String id);
 	
-	@Query(value="SELECT * FROM score WHERE db = :db ORDER BY RAND() LIMIT 1", nativeQuery=true)
+	@Query(value="SELECT * FROM score WHERE db = :db and invalid = false ORDER BY RAND() LIMIT 1", nativeQuery=true)
 	public Optional<Score> getRandomScore(@Param("db") String db);
 }
