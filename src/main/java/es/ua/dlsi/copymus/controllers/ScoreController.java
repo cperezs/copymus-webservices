@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import es.ua.dlsi.copymus.dto.AnnotationDto;
 import es.ua.dlsi.copymus.dto.ScoreDto;
+import es.ua.dlsi.copymus.dto.assemblers.AnnotationAssembler;
 import es.ua.dlsi.copymus.dto.assemblers.ScoreAssembler;
 import es.ua.dlsi.copymus.models.Annotation;
 import es.ua.dlsi.copymus.models.AnnotationIdentity;
@@ -42,9 +44,14 @@ public class ScoreController {
 	private static final String REPRESENTATION_ERROR = "An error occurred while creating a representation for score [%s]";
 	private static final String SAVE_ANNOTATION_ERROR = "Error while saving annotation files for score [%s]";
 	private static final String SCORE_REPRESENTATION_ERROR = "An error occurred while creating a representation for score [%s]";
+	private static final String ANNOTATION_FILES_ERROR = "An error occurred while reading the annotation files";
+	private static final String ANNOTATION_NOT_FOUND = "There are no annotations for user [%d] and score [%s]";
 	
 	@Autowired
 	ScoreAssembler scoreAssembler;
+	
+	@Autowired
+	AnnotationAssembler annotationAssembler;
 	
 	@Autowired
 	ScoreRepository scoreRepository;
@@ -88,6 +95,9 @@ public class ScoreController {
 		if (!score.isPresent()) {
 			throw new NotFoundException(String.format(SCORE_ID_NOT_FOUND, scoreId, db));
 		}
+		
+		if (score.get().isInvalid())
+			throw new ErrorException("Score [" + scoreId + "] is flagged as not valid");
 		
 		Optional<User> user = userRepository.findById(userId);
 		if (!user.isPresent())
@@ -144,6 +154,38 @@ public class ScoreController {
 			throw new ErrorException(String.format(REPRESENTATION_ERROR, score.get().getId()));
 		}
 	}
+	
+	@GetMapping("/{db}/{scoreId}/{userId}")
+	@ResponseStatus(HttpStatus.OK)
+	public AnnotationDto getAnnotation(@PathVariable("db") String db,
+			@PathVariable("scoreId") String scoreId,
+			@PathVariable("userId") Long userId) throws NotFoundException, ErrorException {
+		
+		Optional<Annotation> annotation = annotationRepository.findById(new AnnotationIdentity(userId, scoreId));
+		if (!annotation.isPresent())
+			throw new NotFoundException(String.format(ANNOTATION_NOT_FOUND, userId, scoreId));
+		
+		try {
+			return annotationAssembler.getAnnotationDto(annotation.get());
+		} catch (Exception e) {
+			throw new ErrorException(ANNOTATION_FILES_ERROR);
+		}
+		
+//		File file = storageService.getInteractions(annotation.get());
+//		ByteArrayResource resource;
+//		try {
+//			resource = new ByteArrayResource(Files.readAllBytes(file.toPath()));
+//		} catch (IOException e) {
+//			throw new NotFoundException(READ_ANNOTATION_ERROR);
+//		}
+//
+//	    return ResponseEntity.ok()
+//	    		.header("Content-Disposition", "attachment; filename="+file.getName())
+//	            .contentLength(file.length())
+//	            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//	            .body(resource);
+	}
+	
 	
 	@ExceptionHandler({NotFoundException.class})
 	@ResponseStatus(HttpStatus.NOT_FOUND)

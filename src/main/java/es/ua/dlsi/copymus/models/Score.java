@@ -12,7 +12,7 @@ public class Score {
 	private String author;
 	private String path;
 	private boolean invalid;
-
+	
 	public String getId() {
 		return id;
 	}

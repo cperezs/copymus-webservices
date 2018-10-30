@@ -2,13 +2,17 @@ package es.ua.dlsi.copymus.models;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class AnnotationIdentity implements Serializable {
 	private static final long serialVersionUID = -1915998982986005508L;
 	
+	@Column(name = "user_id")
 	private Long userId;
+
+	@Column(name = "score_id")
 	private String scoreId;
 	
 	public AnnotationIdentity() {}

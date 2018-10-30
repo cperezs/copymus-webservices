@@ -16,14 +16,21 @@ import es.ua.dlsi.copymus.AppProperties;
 @Service
 public class AnnotationStorageService {
 	
+	private static final String IMAGE = "image.png";
+	private static final String INTERACTIONS = "interactions.zip";
+	
 	Logger log = LoggerFactory.getLogger(AnnotationStorageService.class);
 	
 	@Autowired
 	AppProperties conf;
 	
-	private void saveFile(Score score, User user, MultipartFile file, String filename) throws IllegalStateException, IOException {
+	private Path resolveAnnotationPath(Score score, User user) {
 		Path path = Paths.get(conf.getAnnotationsPath());
-		path = path.resolve(score.getDb() + File.separator + score.getId() + File.separator + user.getId());
+		return path.resolve(score.getDb() + File.separator + score.getId() + File.separator + user.getId());
+	}
+	
+	private void saveFile(Score score, User user, MultipartFile file, String filename) throws IllegalStateException, IOException {
+		Path path = resolveAnnotationPath(score, user);
 		path.toFile().mkdirs();
 		File destination = path.resolve(filename).toFile();
 		file.transferTo(destination);
@@ -31,10 +38,20 @@ public class AnnotationStorageService {
 	}
 	
 	public void saveImage(Score score, User user, MultipartFile file) throws IllegalStateException, IOException {
-		saveFile(score, user, file, "image.png");
+		saveFile(score, user, file, IMAGE);
 	}
 	
 	public void saveInteractions(Score score, User user, MultipartFile file) throws IllegalStateException, IOException {
-		saveFile(score, user, file, "interactions.zip");
+		saveFile(score, user, file, INTERACTIONS);
+	}
+	
+	public File getImage(Annotation annotation) {
+		Path path = resolveAnnotationPath(annotation.getScore(), annotation.getUser());
+		return path.resolve(IMAGE).toFile();
+	}
+
+	public File getInteractions(Annotation annotation) {
+		Path path = resolveAnnotationPath(annotation.getScore(), annotation.getUser());
+		return path.resolve(INTERACTIONS).toFile();
 	}
 }

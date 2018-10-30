@@ -1,10 +1,4 @@
 package es.ua.dlsi.copymus.dto;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Base64;
-
-import es.ua.dlsi.copymus.models.Score;
 
 public class ScoreDto {
 	
@@ -17,26 +11,6 @@ public class ScoreDto {
 	public ScoreDto() {
 		
 	}
-	
-	public static ScoreDto fromScore(Score score) throws IOException {
-		ScoreDto dto = new ScoreDto();
-		String id = score.getId();
-		
-		dto.id = id;
-		dto.title = score.getTitle();
-		dto.author = score.getAuthor();
-		dto.pdf = "/score/" + id + ".pdf";
-		dto.midi = encodeFileToBase64Binary(score.getPath() + File.separator + id + ".mid");
-		
-		return dto;
-	}
-
-	private static String encodeFileToBase64Binary(String fileName)
-			throws IOException {
-
-		File file = new File(fileName);
-		return new String(Base64.getEncoder().encode(Files.readAllBytes(file.toPath())));
-}
 	
 	public String getId() {
 		return id;
