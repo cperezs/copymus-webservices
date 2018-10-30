@@ -16,6 +16,27 @@
 @reboot cd /home/cperez/copymus && ./copymus-start.sh
 ```
 
+Launch application with:
+
+```
+./copymus-start.sh
+```
+
+
+## Update
+
+```
+./mvnw clean package -Dmaven.test.skip=true
+```
+
+- Shutdown application with an authenticated POST request to /actuator/shutdown
+- Copy `target/copymus-webservices-X.X.X.jar` into `~/copymus/dist/`
+- Update symbolic link `~/copymus/copymus-latest` to the latest jar
+
+```
+./copymus-start.sh
+```
+
 ## Security
 
 All services are secured using an API key. Currently there is only one key registered, it can be changed in `application.properties`:

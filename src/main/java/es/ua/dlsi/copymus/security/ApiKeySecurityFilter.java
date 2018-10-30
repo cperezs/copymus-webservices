@@ -43,7 +43,7 @@ public class ApiKeySecurityFilter extends BasicAuthenticationFilter {
         	UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(AUTH_USER, token);
         	Authentication result = getAuthenticationManager().authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(result);
-        	log.info("Access granted with token " + token + " to URL " + req.getRequestURI());
+        	log.info("Access granted with token " + token.substring(0, 4) + "*** to URL " + req.getRequestURI());
         } catch (Exception e) {
         	doError(req, res);
         }        
@@ -57,7 +57,8 @@ public class ApiKeySecurityFilter extends BasicAuthenticationFilter {
 				|| uri.equals("/")
 				|| uri.equals("/api-docs.yaml")
 				|| uri.startsWith("/h2-console")
-				|| uri.equals("/favicon.ico"))
+				|| uri.equals("/favicon.ico")
+				|| uri.startsWith("/actuator/"))
 			return;
     	log.info("Access denied without token to URL " + uri);
 	}
