@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.0
+  version: 1.0.0
   title: CopyMus webservices
 servers:
   - url: https://grfia.dlsi.ua.es/copymus
@@ -8,6 +8,181 @@ servers:
   - url: http://localhost:8090
     description: Development server
 paths:
+  /scores/{db}/{id}:
+    get:
+      summary: Returns a score from a database
+      tags:
+        - Score management
+      parameters:
+        - name: db
+          in: path
+          description: Database to get the score from. Currently only "primus" is available.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of the score
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JSON with the score data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Score"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Score or database does not exist
+  /scores/{db}/{id}/annotate:
+    post:
+      summary: Stores an annotation for the score.
+      tags:
+        - Score management
+      parameters:
+        - name: db
+          in: path
+          description: Database to get the score from. Currently only "primus" is available.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of the score
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                image:
+                  type: string
+                  format: binary
+                interactions:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Annotation successfully created
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Score, database, or user does not exist
+  /scores/{db}/{id}/invalidate:
+    post:
+      summary: Marks a score as invalid.
+      tags:
+        - Score management
+      parameters:
+        - name: db
+          in: path
+          description: Database to get the score from. Currently only "primus" is available.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of the score
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+          application/form-data:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: Score invalidated
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Score or database does not exist
+  /scores/{db}/{user}/pending:
+    get:
+      summary: Returns a random score
+      tags:
+        - Score management
+      parameters:
+        - name: db
+          in: path
+          description: Database to get the score from. Currently only "primus" is available.
+          required: true
+          schema:
+            type: string
+        - name: user
+          in: path
+          description: ID of the user that is going to annotate the score
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: JSON with the score data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Score"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: User or database does not exist
+  /scores/{db}/{id}/{user}:
+    get:
+      summary: Returns the annotations for a given score and user
+      tags:
+        - Score management
+      parameters:
+        - name: db
+          in: path
+          description: Database to get the score from. Currently only "primus" is available.
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of the score
+          required: true
+          schema:
+            type: string
+        - name: user
+          in: path
+          description: ID of the user
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: JSON with the annotation data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Annotation"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Score, database, or user does not exist
   /users:
     get:
       summary: Lists all registered users
@@ -129,8 +304,74 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: User does not exist
+  /users/{id}/annotations:
+    get:
+      summary: Lists all annotations performed by the user
+      tags:
+        - User management
+      parameters:
+        - name: id
+          in: path
+          description: ID of the user
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: JSON array with score ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnotationSummary"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
 components:
   schemas:
+    Score:
+      required:
+        - id
+        - title
+        - author
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        pdf:
+          type: string
+          format: byte
+        midi:
+          type: string
+          format: byte
+    Annotation:
+      properties:
+        scoreId:
+          type: string
+        userId:
+          type: integer
+          format: int64
+        image:
+          type: string
+          format: byte
+        interactions:
+          type: string
+          format: byte
+    AnnotationSummary:
+      properties:
+        db:
+          type: string
+        scoreId:
+          type: string
+        userId:
+          type: integer
+          format: int64
+        url:
+          type: string
     User:
       required:
         - id
