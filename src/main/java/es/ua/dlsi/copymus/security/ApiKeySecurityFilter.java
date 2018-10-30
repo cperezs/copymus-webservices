@@ -57,7 +57,8 @@ public class ApiKeySecurityFilter extends BasicAuthenticationFilter {
 				|| uri.equals("/")
 				|| uri.equals("/api-docs.yaml")
 				|| uri.startsWith("/h2-console")
-				|| uri.equals("/favicon.ico"))
+				|| uri.equals("/favicon.ico")
+				|| uri.startsWith("/actuator/"))
 			return;
     	log.info("Access denied without token to URL " + uri);
 	}

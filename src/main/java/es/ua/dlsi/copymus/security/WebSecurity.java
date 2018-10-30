@@ -25,7 +25,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/h2-console/**").permitAll();
 		
 		// Allow access to Swagger UI and OpenAPI documentation
-		http.authorizeRequests().antMatchers(HttpMethod.GET, "/", "/swagger-ui/**", "/api-docs.yaml").permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/", "/swagger-ui/**", "/api-docs.yaml", "/h2-console/**", "/favicon.ico").permitAll();
 		// Any other entry points are secured with an API key
 		http.authorizeRequests().anyRequest().authenticated();
 		http.addFilter(new ApiKeySecurityFilter(authenticationManager()));
