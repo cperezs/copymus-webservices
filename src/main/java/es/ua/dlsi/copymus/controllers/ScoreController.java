@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import es.ua.dlsi.copymus.dto.AnnotationDto;
+import es.ua.dlsi.copymus.dto.InvalidationDto;
 import es.ua.dlsi.copymus.dto.ScoreDto;
 import es.ua.dlsi.copymus.dto.assemblers.AnnotationAssembler;
 import es.ua.dlsi.copymus.dto.assemblers.ScoreAssembler;
@@ -82,14 +82,12 @@ public class ScoreController {
 			throw new ErrorException(String.format(SCORE_REPRESENTATION_ERROR, scoreId));
 		}
 	}
-	
+
 	@PostMapping("/{db}/{scoreId}/annotate")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createAnnotation(@PathVariable("db") String db,
 			@PathVariable("scoreId") String scoreId,
-			@RequestParam("user_id") Long userId,
-			@RequestParam("image") MultipartFile image,
-			@RequestParam("interactions") MultipartFile interactions) throws ErrorException, NotFoundException {
+			@RequestBody AnnotationDto data) throws ErrorException, NotFoundException {
 		
 		Optional<Score> score = scoreRepository.findByDbAndId(db, scoreId);
 		if (!score.isPresent()) {
@@ -99,13 +97,14 @@ public class ScoreController {
 		if (score.get().isInvalid())
 			throw new ErrorException("Score [" + scoreId + "] is flagged as not valid");
 		
+		Long userId = data.getUserId();
 		Optional<User> user = userRepository.findById(userId);
 		if (!user.isPresent())
 			throw new NotFoundException(String.format(USER_ID_NOT_FOUND, userId));
 		
 		try {
-			storageService.saveImage(score.get(), user.get(), image);
-			storageService.saveInteractions(score.get(), user.get(), interactions);
+			storageService.saveImageFromBase64(score.get(), user.get(), data.getImage());
+			storageService.saveInteractionsFromBase64(score.get(), user.get(), data.getInteractions());
 		} catch (Exception e) {
 			throw new ErrorException(String.format(SAVE_ANNOTATION_ERROR, scoreId));
 		}
@@ -114,17 +113,18 @@ public class ScoreController {
 		annotationRepository.save(annotation);
 		log.info("Stored annotations for score " + scoreId + "[" + db + "] by user " + user.get().getUsername());
 	}
-	
+
 	@PostMapping("/{db}/{scoreId}/invalidate")
 	@ResponseStatus(HttpStatus.OK)
 	public void setScoreInvalid(@PathVariable("db") String db,
 		@PathVariable("scoreId") String scoreId,
-		@RequestParam("user_id") Long userId) throws NotFoundException {
+		@RequestBody InvalidationDto data) throws NotFoundException {
 		
 		Optional<Score> optScore = scoreRepository.findByDbAndId(db, scoreId);
 		if (!optScore.isPresent())
 			throw new NotFoundException(String.format(SCORE_ID_NOT_FOUND, scoreId, db));
 		
+		Long userId = data.getUserId();
 		Optional<User> user = userRepository.findById(userId);
 		if (!user.isPresent())
 			throw new NotFoundException(String.format(USER_ID_NOT_FOUND, userId));
