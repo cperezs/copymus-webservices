@@ -106,6 +106,6 @@ public class UserController {
 	
 	@GetMapping("/{id}/annotations")
 	public List<AnnotationSummary> getAnnotations(@PathVariable("id") Long id) {
-		return annotationRepository.getByUserId(id);
+		return annotationRepository.getByUserIdOrderByCreationDateAsc(id);
 	}
 }
