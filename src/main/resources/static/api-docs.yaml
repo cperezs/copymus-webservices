@@ -58,11 +58,11 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
-                user_id:
+                userId:
                   type: integer
                 image:
                   type: string
@@ -98,17 +98,11 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
-                user_id:
-                  type: integer
-          application/form-data:
-            schema:
-              type: object
-              properties:
-                user_id:
+                userId:
                   type: integer
       responses:
         '200':
