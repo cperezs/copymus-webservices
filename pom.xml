@@ -6,7 +6,7 @@
 
 	<groupId>es.ua.dlsi.grfia</groupId>
 	<artifactId>copymus-webservices</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<packaging>jar</packaging>
 
 	<name>copymus-webservices</name>
@@ -88,6 +88,14 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!-- Meico for mei2midi -->
+		<dependency>
+			<groupId>de.cemfi</groupId>
+			<artifactId>meico</artifactId>
+			<version>0.6.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/meico.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -97,6 +105,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<executable>true</executable>
+					<includeSystemScope>true</includeSystemScope>
 				</configuration>
 			</plugin>
 		</plugins>
