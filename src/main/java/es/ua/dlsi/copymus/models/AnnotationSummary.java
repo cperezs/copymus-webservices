@@ -14,4 +14,10 @@ public interface AnnotationSummary {
 	
 	@Value("/scores/#{target.score.db}/#{target.annotationIdentity.scoreId}/#{target.annotationIdentity.userId}")
 	public String getUrl();
+	
+	@Value("#{target.score.title}")
+	public String getTitle();
+	
+	@Value("#{target.score.author}")
+	public String getAuthor();
 }
