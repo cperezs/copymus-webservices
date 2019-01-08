@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import es.ua.dlsi.copymus.AppProperties;
 import es.ua.dlsi.copymus.dto.ScoreDto;
 import es.ua.dlsi.copymus.models.Score;
+import es.ua.dlsi.copymus.util.MEIUtils;
 import es.ua.dlsi.copymus.util.SVGUtils;
 
 @Component
@@ -42,7 +43,10 @@ public class ScoreAssembler {
 			throw e;
 		}
 		
-		File midiFile = new File(conf.getDatabasesPath() + score.getPath() + File.separator + id + ".mid");
+		String meiPath = conf.getDatabasesPath() + score.getPath() + File.separator + id + ".mei";
+		String midiPath = MEIUtils.mei2midi(meiPath);
+		
+		File midiFile = new File(midiPath); //new File(conf.getDatabasesPath() + score.getPath() + File.separator + id + ".mid");
 		try {
 			dto.setMidi(encodeToBase64(Files.readAllBytes(midiFile.toPath())));
 		} catch (Exception e) {
