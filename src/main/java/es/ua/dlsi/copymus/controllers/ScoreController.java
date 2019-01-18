@@ -46,6 +46,7 @@ public class ScoreController {
 	private static final String SCORE_REPRESENTATION_ERROR = "An error occurred while creating a representation for score [%s]";
 	private static final String ANNOTATION_FILES_ERROR = "An error occurred while reading the annotation files";
 	private static final String ANNOTATION_NOT_FOUND = "There are no annotations for user [%d] and score [%s]";
+	private static final String ANNOTATION_EXISTS = "Score [%s] is already annotated by user [%d]";
 	
 	@Autowired
 	ScoreAssembler scoreAssembler;
@@ -88,6 +89,10 @@ public class ScoreController {
 	public void createAnnotation(@PathVariable("db") String db,
 			@PathVariable("scoreId") String scoreId,
 			@RequestBody AnnotationDto data) throws ErrorException, NotFoundException {
+		
+		Optional<Annotation> a = annotationRepository.findById(new AnnotationIdentity(data.getUserId(), scoreId));
+		if (a.isPresent())
+			throw new ErrorException(String.format(ANNOTATION_EXISTS, scoreId, data.getUserId()));
 		
 		Optional<Score> score = scoreRepository.findByDbAndId(db, scoreId);
 		if (!score.isPresent()) {
